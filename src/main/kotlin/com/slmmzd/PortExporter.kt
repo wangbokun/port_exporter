@@ -69,13 +69,13 @@ fun createMetricsEndPoint(vertx: Vertx,host:String,port:Int) {
 }
 
 val gauge = Gauge.build()
-        .name("port_status").labelNames("name","port").help("status of ports").register()
+        .name("port_status").labelNames("name","port","host").help("status of ports").register()
 
 fun writeToRegistry(portStatusRepos: PortStatusRepos) {
     val portStatus = portStatusRepos.getPortStatus()
     portStatus.forEach {
 
-        val metric = gauge.labels(it.name, it.addr.port.toString())
+        val metric = gauge.labels(it.name, it.addr.port.toString(),it.addr.host.toString())
         if(it.isOk())
             metric.set(1.0)
         else
